@@ -2,11 +2,16 @@ package com.spring_crud.services.user;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spring_crud.domain.entity.User;
 import com.spring_crud.domain.repository.UserRepository;
 import com.spring_crud.model.dto.GetUserDto;
+import com.spring_crud.model.request.UserRequestDto;
 import com.spring_crud.model.response.BaseResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -17,11 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    @SuppressWarnings("null")
     @Override
-    public BaseResponse<List<GetUserDto>> getAll() {
-        List<User> pgb = userRepository.findAll();
+    public Page<GetUserDto> getAll(Pageable pageable, String search) {
+        Page<User> pgb = userRepository.getAll(pageable, search);
 
-        List<GetUserDto> userList = pgb
+        List<GetUserDto> spluList = pgb.getContent()
                 .stream()
                 .map((user) -> GetUserDto.builder()
                         .name(user.getName())
@@ -30,7 +36,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .toList();
 
-        return BaseResponse.ok(userList);
+        return new PageImpl<>(spluList, pgb.getPageable(), pgb.getTotalElements());
     }
 
     // public User save(User user) {
