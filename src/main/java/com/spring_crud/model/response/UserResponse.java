@@ -1,11 +1,11 @@
-package com.spring_crud.model.dto;
+package com.spring_crud.model.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class GetUserDto {
+public class UserResponse {
 
     private String name;
     private String username;

@@ -1,18 +1,20 @@
 package com.spring_crud.services.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spring_crud.domain.entity.User;
 import com.spring_crud.domain.repository.UserRepository;
-import com.spring_crud.model.dto.GetUserDto;
-import com.spring_crud.model.request.UserRequestDto;
+import com.spring_crud.exception.CustomException;
+import com.spring_crud.model.request.UserRequest;
 import com.spring_crud.model.response.BaseResponse;
+import com.spring_crud.model.response.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,19 +26,55 @@ public class UserServiceImpl implements UserService {
 
     @SuppressWarnings("null")
     @Override
-    public Page<GetUserDto> getAll(Pageable pageable, String search) {
+    public Page<UserResponse> getAll(Pageable pageable, String search) {
         Page<User> pgb = userRepository.getAll(pageable, search);
 
-        List<GetUserDto> spluList = pgb.getContent()
+        List<UserResponse> userList = pgb.getContent()
                 .stream()
-                .map((user) -> GetUserDto.builder()
+                .map((user) -> UserResponse.builder()
                         .name(user.getName())
                         .username(user.getUsername())
                         .password(user.getPassword())
                         .build())
                 .toList();
 
-        return new PageImpl<>(spluList, pgb.getPageable(), pgb.getTotalElements());
+        return new PageImpl<>(userList, pgb.getPageable(), pgb.getTotalElements());
+    }
+
+    @Override
+    public BaseResponse<List<UserResponse>> detail(String id) {
+
+        Optional<User> data = userRepository.findById(Long.parseLong(id));
+
+        if (!data.isPresent()) {
+            return BaseResponse.error("User Not Found");
+        }
+
+        List<UserResponse> userList = data
+                .stream()
+                .map((user) -> UserResponse.builder()
+                        .name(user.getName())
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .build())
+                .toList();
+
+        return BaseResponse.ok(userList);
+    }
+
+    @Override
+    public BaseResponse<String> save(UserRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+
+        try {
+            userRepository.save(user);
+            return BaseResponse.ok("Success Save Data");
+        } catch (RuntimeException exception) {
+            throw new CustomException(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // public User save(User user) {

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,8 +21,10 @@ public class BaseResponse<T> implements Serializable {
     private int status;
     private boolean success;
     private String message;
+    @SuppressWarnings("rawtypes")
+    private List error;
 
-    @JsonIgnoreProperties({ "pageable", "sort" })
+    @JsonIgnoreProperties({ "data", "pageable", "sort" })
     private transient T data;
 
     public static BaseResponse<String> info(String message) {
@@ -64,7 +67,7 @@ public class BaseResponse<T> implements Serializable {
         return BaseResponse.<T>builder()
                 .status(500)
                 .success(false)
-                // .message(StringUtils.isNotBlank(message) ? message : "")
+                .message(message)
                 .data(null)
                 .build();
     }
@@ -73,7 +76,7 @@ public class BaseResponse<T> implements Serializable {
         return BaseResponse.<T>builder()
                 .status(500)
                 .success(false)
-                // .message(StringUtils.isNotBlank(message) ? message : "")
+                .message(message)
                 .data(data)
                 .build();
     }
@@ -85,6 +88,15 @@ public class BaseResponse<T> implements Serializable {
                 .message(throwable.getMessage())
                 .data(null)
                 .build();
+    }
+
+    public static <T> ValidationResponse<T> validation(@SuppressWarnings("rawtypes") List list) {
+        ValidationResponse<T> response = new ValidationResponse<>();
+        response.setStatus(500);
+        response.setSuccess(false);
+        response.setMessage("Request Validation Error");
+        response.setError(list);
+        return response;
     }
 
     public static <T> BaseResponse<T> internalError() {
