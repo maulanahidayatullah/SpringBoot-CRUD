@@ -1,7 +1,5 @@
 package com.spring_crud.services.user;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,8 @@ public interface UserService {
 
     Page<UserResponse> getAll(Pageable pageable, String search);
 
-    BaseResponse<List<UserResponse>> detail(String id);
+    BaseResponse<UserResponse> detail(String id);
 
     BaseResponse<String> save(UserRequest request);
-    // Iterable<User> findall();
 
 }

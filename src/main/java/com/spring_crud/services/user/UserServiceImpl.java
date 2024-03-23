@@ -17,14 +17,15 @@ import com.spring_crud.model.response.BaseResponse;
 import com.spring_crud.model.response.UserResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @SuppressWarnings("null")
     @Override
     public Page<UserResponse> getAll(Pageable pageable, String search) {
         Page<User> pgb = userRepository.getAll(pageable, search);
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse<List<UserResponse>> detail(String id) {
+    public BaseResponse<UserResponse> detail(String id) {
 
         Optional<User> data = userRepository.findById(Long.parseLong(id));
 
@@ -50,16 +51,15 @@ public class UserServiceImpl implements UserService {
             return BaseResponse.error("User Not Found");
         }
 
-        List<UserResponse> userList = data
-                .stream()
-                .map((user) -> UserResponse.builder()
-                        .name(user.getName())
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .build())
-                .toList();
+        User user = data.get();
 
-        return BaseResponse.ok(userList);
+        UserResponse response = UserResponse.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .build();
+
+        return BaseResponse.ok(response);
     }
 
     @Override

@@ -1,5 +1,9 @@
 package com.spring_crud.domain.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,7 +12,10 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "t_user", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-public class User {
+public class User implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -696969L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +23,6 @@ public class User {
 
     private String name;
 
-    // @NotEmpty(message = "Kudu ada :v")
-    // @Column(unique = true)
     private String username;
 
     private String password;
@@ -25,5 +30,4 @@ public class User {
     private String token;
 
     private String token_expired_at;
-
 }

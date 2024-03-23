@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,8 +20,6 @@ public class BaseResponse<T> implements Serializable {
     private int status;
     private boolean success;
     private String message;
-    @SuppressWarnings("rawtypes")
-    private List error;
 
     @JsonIgnoreProperties({ "data", "pageable", "sort" })
     private transient T data;
@@ -90,12 +87,11 @@ public class BaseResponse<T> implements Serializable {
                 .build();
     }
 
-    public static <T> ValidationResponse<T> validation(@SuppressWarnings("rawtypes") List list) {
+    public static <T> ValidationResponse<T> validation() {
         ValidationResponse<T> response = new ValidationResponse<>();
         response.setStatus(500);
         response.setSuccess(false);
         response.setMessage("Request Validation Error");
-        response.setError(list);
         return response;
     }
 
