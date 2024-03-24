@@ -15,5 +15,5 @@ public class AnimeRequest {
     @NotEmpty(message = "Kudu ada :v")
     private String nama_anime;
 
-    private List<Category> categories;
+    private List<Long> categoryId;
 }

@@ -10,7 +10,7 @@ import com.spring_crud.domain.entity.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-        @Query("SELECT DISTINCT c FROM Category c " +
+        @Query("SELECT DISTINCT c FROM Category c LEFT JOIN FETCH c.animes a " +
                         "WHERE LOWER(c.nama_category) LIKE LOWER(CONCAT('%', :search, '%')) ")
         Page<Category> getAll(
                         Pageable pageable,

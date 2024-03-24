@@ -11,8 +11,8 @@ import com.spring_crud.domain.entity.Anime;
 @Repository
 public interface AnimeRepository extends JpaRepository<Anime, Long> {
 
-        @Query("SELECT DISTINCT a FROM Anime a " +
-                        "WHERE LOWER(a.nama_anime) LIKE LOWER(CONCAT('%', :search, '%')) ")
+        @Query("SELECT DISTINCT a FROM Anime a LEFT JOIN FETCH a.categories c " +
+                        "WHERE LOWER(a.nama_anime) LIKE LOWER(CONCAT('%', :search, '%')) OR :search IS NULL OR :search = ''")
         Page<Anime> getAll(
                         Pageable pageable,
                         String search);

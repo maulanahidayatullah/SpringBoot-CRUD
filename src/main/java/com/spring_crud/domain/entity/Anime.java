@@ -25,6 +25,7 @@ public class Anime implements Serializable {
 
     private String nama_anime;
 
-    @ManyToMany(mappedBy = "animes", cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+    @JoinTable(name = "s_category_anime", joinColumns = @JoinColumn(name = "anime_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "category_id", nullable = false))
     private List<Category> categories;
 }

@@ -2,6 +2,7 @@ package com.spring_crud.services.category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring_crud.domain.entity.Category;
 import com.spring_crud.domain.repository.CategoryRepository;
+import com.spring_crud.model.dto.AnimeDto;
 import com.spring_crud.model.response.BaseResponse;
 import com.spring_crud.model.response.CategoryResponse;
 
@@ -19,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository = null;
+    private final CategoryRepository categoryRepository;
 
     @SuppressWarnings("null")
     @Override
@@ -28,9 +30,20 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<CategoryResponse> categoryList = pgb.getContent()
                 .stream()
-                .map((category) -> CategoryResponse.builder()
-                        .nama_category(category.getNama_category())
-                        .build())
+                .map(category -> {
+                    List<AnimeDto> animeDtoList = category.getAnimes()
+                            .stream()
+                            .map(anime -> AnimeDto.builder()
+                                    .animeId(anime.getId())
+                                    .namaAnime(anime.getNama_anime())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    return CategoryResponse.builder()
+                            .nama_category(category.getNama_category())
+                            .animes(animeDtoList)
+                            .build();
+                })
                 .toList();
 
         return new PageImpl<>(categoryList, pgb.getPageable(), pgb.getTotalElements());
