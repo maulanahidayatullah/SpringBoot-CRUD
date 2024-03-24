@@ -2,7 +2,6 @@ package com.spring_crud.domain.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;

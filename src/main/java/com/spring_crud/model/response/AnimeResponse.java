@@ -1,6 +1,5 @@
 package com.spring_crud.model.response;
 
-import com.spring_crud.domain.entity.Category;
 import com.spring_crud.model.dto.CategoryDto;
 
 import java.util.List;

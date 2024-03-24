@@ -2,8 +2,6 @@ package com.spring_crud.model.request;
 
 import java.util.List;
 
-import com.spring_crud.domain.entity.Category;
-
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
